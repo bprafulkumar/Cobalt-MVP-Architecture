@@ -60,8 +60,31 @@ class CbAccordionlist extends React.Component {
     value,
     modifiersResponseData,
     setModifiersResponseData,
-    Item_ID
+    Item_ID,
+    Category_Id
   ) => {
+
+    const updatedModifiersResponseData = { ...modifiersResponseData };
+
+    const categoryIndex = updatedModifiersResponseData?.Categories.findIndex(
+      (category) => category.Category_Id === Category_Id
+    );
+  
+    if (categoryIndex !== -1) {
+      const category = updatedModifiersResponseData.Categories[categoryIndex];
+  
+      const modifierIndex = category.Modifiers.findIndex(
+        (modifier) => modifier.Modifier_Id === item.Modifier_Id
+      );
+  
+      if (modifierIndex !== -1) {
+        category.Modifiers[modifierIndex].isChecked = value;
+      }
+    }
+  
+    setModifiersResponseData(updatedModifiersResponseData);
+    // console.log("Updated Modifiers Response Data:", JSON.stringify(updatedModifiersResponseData, null, 2));
+    
     this.getAllSelectedModifiers({ ...item, isChecked: value,Item_ID });
   };
 
@@ -233,7 +256,7 @@ class CbAccordionlist extends React.Component {
                                   >
                                     <Checkbox
                                       // isChecked={this.isValueChecked(order?.Modifiers, item, cartData, itemDataVisible, itemIndex,existingCartData)}
-                                      // isChecked={item.isChecked}
+                                      isChecked={item.isChecked}
                                       onChange={(value) => {
                                         this.setState((prevState) => {
                                           const filteredModifiers = prevState.selectedModifiers.filter(
@@ -250,7 +273,8 @@ class CbAccordionlist extends React.Component {
                                             value,
                                             modifiersResponseData,
                                             setModifiersResponseData,
-                                            singleItemDetails.Item_ID
+                                            singleItemDetails.Item_ID,
+                                            order.Category_Id
                                           )
                                         })
                                       }}
